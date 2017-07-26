@@ -6,11 +6,18 @@ import { Link } from 'react-router-dom'
 
 class BookSearch extends Component{
   state = {
-    books : []
+    books : [],
+    query : ''
   }
 
-  SearchBooks = (input) =>
-    BooksAPI.get()
+  updateQuery = (query) => {
+  this.setState({query: query.trim()})
+  }
+
+  removeQuery = (query) => {
+  this.setState({query: ''})
+  }
+
 
   render(){    
     return(
