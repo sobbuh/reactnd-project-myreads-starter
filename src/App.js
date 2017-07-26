@@ -11,7 +11,9 @@ class BooksApp extends React.Component {
   }
 
   updateStatus = (book, shelf) => {
-  BooksAPI.update(book,shelf)
+  BooksAPI.update(book,shelf).then((books)=>{
+    this.setState({books})
+  })
   }
 
   componentDidMount(){
@@ -23,14 +25,23 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
+          <div className="list-books">
+            <div className="list-books-title">
+              <h1>MyReads</h1>
+            </div>
         <Route exact path="/" render={() =>
-          <BookShelf books={this.state.books} updateStatus={this.updateStatus} />  
+          <div>
+          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='currentlyReading' title='Currently Reading' />  
+          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='wantToRead' title='Want to Read' />
+          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='read' title='Read'/>
+          </div>
         }/>
+
 
         <Route path="/search" render={()=>     
           <BookSearch books={this.state.books} updateStatus={this.updateStatus}/>
         }/> 
-
+        </div>
      </div>
   )}
 }

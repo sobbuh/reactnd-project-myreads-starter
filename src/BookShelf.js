@@ -6,29 +6,18 @@ class BookShelf extends Component{
 
 
 	render(){
-		const { books, updateStatus } = this.props
-
-		let currentlyReading, wantToRead, read, none 
-
-		currentlyReading = books.filter((book) => book.shelf === 'currentlyReading')
-		wantToRead = books.filter((book) => book.status === 'wantToRead')
-		read = books.filter((book) => book.status === 'read')
+		const { books, updateStatus, shelfLabel, title } = this.props
 		
-
-
 		return (
 			<div> 
-				<div className="list-books">
-		            <div className="list-books-title">
-		              <h1>MyReads</h1>
-		            </div>
+		            
 		            <div className="list-books-content">  
 		                <div className="bookshelf">
-		                  <h2 className="bookshelf-title">Currently Reading</h2>
+		                  <h2 className="bookshelf-title">{title}</h2>
 		                  
 		                  <div className="bookshelf-books">
 		                    <ol className="books-grid">
-		                    {currentlyReading.map((book) => (
+		                    {books.filter(book => book.shelf === shelfLabel).map(book => (
 		                      <li key={book.id}>
 		                        <div className="book">
 		                          <div className="book-top">
@@ -37,7 +26,7 @@ class BookShelf extends Component{
 		                              <select>
 		                                <option value="none" disabled>Move to...</option>
 		                                <option value="currentlyReading" onClick={() => updateStatus(book, this.value)}>Currently Reading</option>
-		                                <option value="wantToRead">Want to Read</option>
+		                                <option value="wantToRead" onClick={() => updateStatus(book, 'wantToRead')}>Want to Read</option>
 		                                <option value="read">Read</option>
 		                                <option value="none">None</option>
 		                              </select>
@@ -47,15 +36,17 @@ class BookShelf extends Component{
 		                          <div className="book-authors">{book.authors}</div>
 		                        </div>
 		                      </li>
-		                    ))}
+		                      ))
+		                    }
 		                    </ol>
-		                  </div>
-		                </div>
-		            </div>
-		                
-		            <div className="open-search">
-		              <Link to="/search">Add a book</Link>
-		            </div>
+		           
+		        	</div>
+		        	</div>
+
+
+		        	<div className="open-search">
+		            	<Link to="/search">Add a book</Link>
+		        	</div>
 				</div>
 			</div>
 				
