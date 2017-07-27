@@ -6,22 +6,31 @@ import BookSearch from './BookSearch'
 import { Route, Link } from 'react-router-dom'
 
 class BooksApp extends React.Component {
+  
   state = {
     books : [],
   }
+  
 
-  updateStatus = (book, shelf) => {
-  BooksAPI.update(book,shelf).then((books)=>{
-    this.setState({books})
-  })
+  onChangeStatus = (book) => {
+      
+      const newBooks = this.state.books
+      let book2 = newBooks.filter((b) => b.id === book.book.id)
+      book2[0].shelf = book.shelf
+      BooksAPI.update(book2, book2[0].shelf)
+
+      return this.setState({
+        books: newBooks
+      })
   }
+
 
   componentDidMount(){
     BooksAPI.getAll().then((books)=>{
       this.setState({books})
     })
-
   }
+
   render() {
     return (
       <div className="app">
@@ -31,9 +40,9 @@ class BooksApp extends React.Component {
             </div>
         <Route exact path="/" render={() =>
           <div>
-          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='currentlyReading' title='Currently Reading' />  
-          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='wantToRead' title='Want to Read' />
-          <BookShelf books={this.state.books} updateStatus={this.updateStatus} shelfLabel='read' title='Read'/>
+          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='currentlyReading' title='Currently Reading' />  
+          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='wantToRead' title='Want to Read' />
+          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='read' title='Read'/>
           </div>
         }/>
 

@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 
 class BookShelf extends Component{
-
-
+  
 	render(){
 		const { books, updateStatus, shelfLabel, title } = this.props
 		
@@ -23,10 +22,10 @@ class BookShelf extends Component{
 		                          <div className="book-top">
 		                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
 		                            <div className="book-shelf-changer">
-		                              <select>
+		                              <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
 		                                <option value="none" disabled>Move to...</option>
-		                                <option value="currentlyReading" onClick={() => updateStatus(book, this.value)}>Currently Reading</option>
-		                                <option value="wantToRead" onClick={() => updateStatus(book, 'wantToRead')}>Want to Read</option>
+		                                <option value="currentlyReading">Currently Reading</option>
+		                                <option value="wantToRead">Want to Read</option>
 		                                <option value="read">Read</option>
 		                                <option value="none">None</option>
 		                              </select>
