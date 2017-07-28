@@ -8,11 +8,12 @@ import { debounce } from 'lodash'
 
 class BooksApp extends React.Component {
   
+//TODO : add propTypes
+
   state = {
     books : [],
     searchedBooks : [],
   }
-  
 
   onChangeStatus = (book) => {
       const newBooks = this.state.books
