@@ -13,12 +13,26 @@ class BooksApp extends React.Component {
   
 
   onChangeStatus = (book) => {
-      
+    console.log(book)
       const newBooks = this.state.books
       let updatedBook = newBooks.filter((b) => b.id === book.book.id)
+
+      if (updatedBook.length === 0){
+        BooksAPI.get(book.book.id).then((response) => {
+      return response}).then((bookToUpdate) => {
+          console.log(bookToUpdate)
+          newBooks.push(bookToUpdate)
+          console.log(newBooks.length)
+          bookToUpdate.shelf = book.shelf
+          BooksAPI.update(bookToUpdate,bookToUpdate.shelf)
+        }
+      )
+      }
+
+      else{
       updatedBook[0].shelf = book.shelf
-      console.log(updatedBook[0].shelf)
       BooksAPI.update(updatedBook, updatedBook[0].shelf) //make promise so runs in background
+      }
 
       this.setState({
         books: newBooks
