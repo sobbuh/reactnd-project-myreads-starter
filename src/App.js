@@ -4,11 +4,13 @@ import './App.css'
 import BookShelf from './BookShelf'
 import BookSearch from './BookSearch'
 import { Route, Link } from 'react-router-dom'
+import { debounce } from 'lodash'
 
 class BooksApp extends React.Component {
   
   state = {
     books : [],
+    searchedBooks : [],
   }
   
 
@@ -31,7 +33,7 @@ class BooksApp extends React.Component {
 
       else{
       updatedBook[0].shelf = book.shelf
-      BooksAPI.update(updatedBook, updatedBook[0].shelf) //make promise so runs in background
+      BooksAPI.update(updatedBook, updatedBook[0].shelf) //catch errors, make optimist
       }
 
       this.setState({
@@ -39,6 +41,17 @@ class BooksApp extends React.Component {
       })
   }
 
+
+  onChangeSearch = debounce((query) => {
+    BooksAPI.search(query).then((query) => {
+      return query}).then((matchedBooks) => {
+      if (Array.isArray(matchedBooks)) {
+        this.setState({searchedBooks : matchedBooks})
+         }
+      else {
+      this.setState({searchedBooks : []})
+      }}).catch(e => console.log(e))
+    }, 50)
 
   componentDidMount(){
     BooksAPI.getAll().then((books)=>{
@@ -63,7 +76,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={()=>     
-          <BookSearch books={this.state.books} updateStatus={this.onChangeStatus}/>
+          <BookSearch searchedBooks={this.state.searchedBooks} books={this.state.books} updateStatus={this.onChangeStatus} updateQuery={this.onChangeSearch}/>
         }/> 
         </div>
      </div>
