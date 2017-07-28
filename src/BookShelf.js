@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
-
- //TODO : make stateless function 
+import PropTypes from 'prop-types'
 
 const BookShelf = (props) => {
       
@@ -48,6 +47,13 @@ const BookShelf = (props) => {
 	    </div>
 	  </div>
 	  )     
+}
+
+BookShelf.propTypes = {
+  books: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  shelfLabel: PropTypes.string.isRequired,
+  updateStatus: PropTypes.func.isRequired,
 }
 
 export default BookShelf

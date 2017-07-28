@@ -5,35 +5,43 @@ import BookShelf from './BookShelf'
 import BookSearch from './BookSearch'
 import { Route, Link } from 'react-router-dom'
 import { debounce } from 'lodash'
+import PropTypes from 'prop-types'
 
 class BooksApp extends React.Component {
-  
-//TODO : add propTypes
 
+  // Keep track of books and searched books as two separate states
   state = {
     books : [],
     searchedBooks : [],
   }
 
+  // On changing the status of a book, update a new array and then pass it to the state object
   onChangeStatus = (book) => {
       const newBooks = this.state.books
       let updatedBook = newBooks.filter((b) => b.id === book.book.id)
 
+      // if the book is not already part of our books array, add it to the array and update the shelf
+      // update the searchedBooks array as well, to keep shelf changes consistent
       if (updatedBook.length === 0){
         BooksAPI.get(book.book.id).then((response) => {
-      return response}).then((bookToUpdate) => {
-          console.log(bookToUpdate)
-          newBooks.push(bookToUpdate)
-          console.log(newBooks.length)
-          bookToUpdate.shelf = book.shelf
-          BooksAPI.update(bookToUpdate,bookToUpdate.shelf)
-        }
-      )
+      
+          return response}).then((bookToUpdate) => {
+            newBooks.push(bookToUpdate)
+            bookToUpdate.shelf = book.shelf
+            this.setState((prevState) => {
+              searchedBooks: prevState.searchedBooks.filter(b => b.id === bookToUpdate.id).map(b => b.shelf = book.shelf)
+            })
+            BooksAPI.update(bookToUpdate,bookToUpdate.shelf)
+        })
       }
-
+      // if the book is part of our books array, update the shelf and the searchedBooks array
       else{
       updatedBook[0].shelf = book.shelf
-      BooksAPI.update(updatedBook, updatedBook[0].shelf) // TODO: catch errors, make proper optimist
+      BooksAPI.update(updatedBook, updatedBook[0].shelf) 
+      this.setState((prevState) => {
+        searchedBooks : prevState.searchedBooks.filter(b => b.id === updatedBook.id).map(b => b.shelf = book.shelf)
+      })
+      
       }
 
       this.setState({
@@ -46,13 +54,17 @@ class BooksApp extends React.Component {
     BooksAPI.search(query).then((query) => {
       return query}).then((matchedBooks) => {
       if (Array.isArray(matchedBooks)) {
-
-        this.state.books.map((book) => matchedBooks.filter((b) => b.id === book.id).map((b) => b.shelf = "none"))
-        // TODO: filter and map book status to 'none'
+        matchedBooks.map((b) => {
+          b.shelf = 'none'})
+        for (const book of this.state.books){
+            matchedBooks.map((b) => {
+              if (book.id === b.id){
+                b.shelf = book.shelf
+            }})}
         this.setState({searchedBooks : matchedBooks})
-         }
+      }
       else {
-      this.setState({searchedBooks : []})
+        this.setState({searchedBooks : []})
       }}).catch(e => console.log(e))
   }
   
