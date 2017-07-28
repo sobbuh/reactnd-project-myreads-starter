@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -15,7 +13,7 @@ class BookSearch extends Component{
   }
 
   render() {
-    const { searchedBooks, books, updateStatus, updateSearch } = this.props
+    const { searchedBooks, updateStatus, updateSearch } = this.props
     const { query } = this.state
 
     if (query){
@@ -51,7 +49,7 @@ class BookSearch extends Component{
                                   backgroundImage: `url(${book.imageLinks ? book.imageLinks.thumbnail : 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'})` }}></div>                         
                                 <div className="book-shelf-changer">
                                   <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
-                                    <option value="none" disabled>Move to...</option>
+                                    <option value="" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>
                                     <option value="read">Read</option>
@@ -72,7 +70,6 @@ class BookSearch extends Component{
 }
 
 BookSearch.propTypes = {
-  books: PropTypes.array.isRequired,
   searchedBooks: PropTypes.array.isRequired,
   updateSearch: PropTypes.func.isRequired,
   updateStatus: PropTypes.func.isRequired,

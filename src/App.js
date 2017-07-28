@@ -3,9 +3,7 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import BookShelf from './BookShelf'
 import BookSearch from './BookSearch'
-import { Route, Link } from 'react-router-dom'
-import { debounce } from 'lodash'
-import PropTypes from 'prop-types'
+import { Route } from 'react-router-dom'
 
 class BooksApp extends React.Component {
 
@@ -92,7 +90,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={()=>     
-          <BookSearch searchedBooks={this.state.searchedBooks} books={this.state.books} updateStatus={this.onChangeStatus} updateSearch={this.onChangeSearch}/>
+          <BookSearch searchedBooks={this.state.searchedBooks} updateStatus={this.onChangeStatus} updateSearch={this.onChangeSearch}/>
         }/> 
         </div>
      </div>

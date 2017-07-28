@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -22,7 +21,7 @@ const BookShelf = (props) => {
 	                  <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
 	                  <div className="book-shelf-changer">
 	                    <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
-	                      <option value="none" disabled>Move to...</option>
+	                      <option value="" disabled>Move to...</option>
 	                      <option value="currentlyReading">Currently Reading</option>
 	                      <option value="wantToRead">Want to Read</option>
 	                      <option value="read">Read</option>
