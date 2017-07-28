@@ -12,25 +12,23 @@ class BookSearch extends Component{
 
     updateQuery = (query) => {
     this.setState({query: query.trim()})
+
+    if (query){
+    BooksAPI.search(query,5).then((response) => {
+      return response}).then((matchedBooks) => {
+      if (Array.isArray(matchedBooks)){
+      this.setState({matchingBooks : matchedBooks})
+      }
+    })}
+    else {
+      this.setState({matchingBooks : []})
+    }
+  
     }
 
   render() {
     const { books, updateStatus } = this.props
     const { query, matchingBooks } = this.state
-
-    if (query){
-    BooksAPI.search(query,5).then((response) => {
-      
-      return response}).then((matchedBooks) => {
-      if (Array.isArray(matchedBooks)){
-      this.setState({matchingBooks : matchedBooks})
-      console.log(matchingBooks)
-      }
-    })}
-    else {
-      this.state.matchingBooks = books
-    }
-  
 
     return(
     <div className="search-books">
@@ -65,7 +63,7 @@ class BookSearch extends Component{
                                 </div>
                               </div>
                               <div className="book-title">{book.title}</div>
-                              <div className="book-authors">{book.author}</div>
+                              <div className="book-authors">{book.authors.join(", ")}</div>
                             </div>
                           </li>
                         ))}
