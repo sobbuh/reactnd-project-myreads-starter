@@ -1,25 +1,36 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import BooksAPI from './BooksAPI.js'
+import * as BooksAPI from './BooksAPI'
 import { Link } from 'react-router-dom'
 
 
 class BookSearch extends Component{
   state = {
-    books : [],
-    query : ''
+    query : '',
+    matchingBooks : []
   }
 
-  updateQuery = (query) => {
-  this.setState({query: query.trim()})
-  }
-
-  removeQuery = (query) => {
-  this.setState({query: ''})
-  }
+    updateQuery = (query) => {
+    this.setState({query: query.trim()})
+    }
 
   render() {
     const { books, updateStatus } = this.props
+    const { query, matchingBooks } = this.state
+
+    if (query){
+    BooksAPI.search(query,5).then((response) => {
+      
+      return response}).then((matchedBooks) => {
+      if (Array.isArray(matchedBooks)){
+      this.setState({matchingBooks : matchedBooks})
+      console.log(matchingBooks)
+      }
+    })}
+    else {
+      this.state.matchingBooks = books
+    }
+  
 
     return(
     <div className="search-books">
@@ -27,19 +38,24 @@ class BookSearch extends Component{
         <Link className="close-search" to="/">Close</Link> 
         <div className="search-books-input-wrapper">
         
-          <input type="text" placeholder="Search by title or author"/>
+            <input
+                type="text"
+                value={this.state.query}
+                onChange={(event) => {this.updateQuery(event.target.value)}}
+                placeholder="Search by title or author"
+            />
           
         </div>
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-        {books.map((book) => (
+        {matchingBooks.map((book) => (
                           <li key={book.id}>
                             <div className="book">
                               <div className="book-top">
-                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.coverURL})` }}></div>
+                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
                                 <div className="book-shelf-changer">
-                                  <select>
+                                  <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
                                     <option value="none" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>

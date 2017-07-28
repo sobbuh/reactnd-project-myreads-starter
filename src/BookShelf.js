@@ -6,7 +6,7 @@ class BookShelf extends Component{
   
 	render(){
 		const { books, updateStatus, shelfLabel, title } = this.props
-		
+
 		return (
 			<div> 
 		            

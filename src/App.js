@@ -15,10 +15,10 @@ class BooksApp extends React.Component {
   onChangeStatus = (book) => {
       
       const newBooks = this.state.books
-      let book2 = newBooks.filter((b) => b.id === book.book.id)
-      book2[0].shelf = book.shelf
+      let updatedBook = newBooks.filter((b) => b.id === book.book.id)
+      updatedBook[0].shelf = book.shelf
       
-      BooksAPI.update(book2, book2[0].shelf) //make promise so runs in background
+      BooksAPI.update(updatedBook, updatedBook[0].shelf) //make promise so runs in background
 
       this.setState({
         books: newBooks
@@ -49,7 +49,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={()=>     
-          <BookSearch books={this.state.books} updateStatus={this.updateStatus}/>
+          <BookSearch books={this.state.books} updateStatus={this.onChangeStatus}/>
         }/> 
         </div>
      </div>
