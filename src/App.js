@@ -15,7 +15,6 @@ class BooksApp extends React.Component {
   
 
   onChangeStatus = (book) => {
-    console.log(book)
       const newBooks = this.state.books
       let updatedBook = newBooks.filter((b) => b.id === book.book.id)
 
@@ -33,7 +32,7 @@ class BooksApp extends React.Component {
 
       else{
       updatedBook[0].shelf = book.shelf
-      BooksAPI.update(updatedBook, updatedBook[0].shelf) //catch errors, make optimist
+      BooksAPI.update(updatedBook, updatedBook[0].shelf) // TODO: catch errors, make proper optimist
       }
 
       this.setState({
@@ -42,22 +41,26 @@ class BooksApp extends React.Component {
   }
 
 
-  onChangeSearch = debounce((query) => {
+  onChangeSearch = (query) => {
     BooksAPI.search(query).then((query) => {
       return query}).then((matchedBooks) => {
       if (Array.isArray(matchedBooks)) {
+
+        this.state.books.map((book) => matchedBooks.filter((b) => b.id === book.id).map((b) => b.shelf = "none"))
+        // TODO: filter and map book status to 'none'
         this.setState({searchedBooks : matchedBooks})
          }
       else {
       this.setState({searchedBooks : []})
       }}).catch(e => console.log(e))
-    }, 50)
+  }
+  
 
   componentDidMount(){
-    BooksAPI.getAll().then((books)=>{
+    BooksAPI.getAll().then((books)=>
       this.setState({books})
-    })
-  }
+    )}
+  
 
   render() {
     return (
@@ -76,7 +79,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={()=>     
-          <BookSearch searchedBooks={this.state.searchedBooks} books={this.state.books} updateStatus={this.onChangeStatus} updateQuery={this.onChangeSearch}/>
+          <BookSearch searchedBooks={this.state.searchedBooks} books={this.state.books} updateStatus={this.onChangeStatus} updateSearch={this.onChangeSearch}/>
         }/> 
         </div>
      </div>

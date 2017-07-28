@@ -9,9 +9,20 @@ class BookSearch extends Component{
     query : '',
   }
 
+  updateQuery = (query) => {
+  this.setState({query})
+  }
+
   render() {
-    const { searchedBooks, books, updateStatus, updateQuery } = this.props
+    const { searchedBooks, books, updateStatus, updateSearch } = this.props
     const { query } = this.state
+
+    if (query){
+      updateSearch(query)
+    }
+    else{
+      
+    }
 
     return(
     <div className="search-books">
@@ -21,8 +32,8 @@ class BookSearch extends Component{
         
             <input
                 type="text"
-                value={this.state.query}
-                onChange={(event) => {updateQuery(event.target.value)}}
+                value={query}
+                onChange={(event) => this.updateQuery(event.target.value)}
                 placeholder="Search by title or author"
             />
           
@@ -30,16 +41,18 @@ class BookSearch extends Component{
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-        {searchedBooks.map((book) => (
+          {searchedBooks.map((book) => (  
+                          
                           <li key={book.id}>
                             <div className="book">
                               <div className="book-top">
+                               
+                                
+                                
 
-                                {book.imageLinks.smallThumbnail ?  
-                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div> :
-                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div> 
-                                }
-                              
+                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks ? book.imageLinks.thumbnail : 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'})` }}></div> 
+
+                        
                                 <div className="book-shelf-changer">
                                   <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
                                     <option value="none" disabled>Move to...</option>
@@ -51,7 +64,7 @@ class BookSearch extends Component{
                                 </div>
                               </div>
                               <div className="book-title">{book.title}</div>
-                              <div className="book-authors">{book.authors}</div>
+                              <div className="book-authors">{book.authors ? book.authors.join(", ") : "No Author Given"}</div>
                             </div>
                           </li>
                         ))}
