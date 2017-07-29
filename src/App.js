@@ -13,18 +13,19 @@ class BooksApp extends React.Component {
     searchedBooks : [],
   }
 
-  // On changing the status of a book, update a new array and then pass it to the state object
+
+  // On changing the status of a book, update the book and add it to the books array
   onChangeStatus = (book, value) => {
-    book.shelf = value
-    
+    book.shelf = value  
     this.setState(state => ({
         books: state.books.filter(b => b.id !== book.id).concat([ book ])
       }))
-
     BooksAPI.update(book, value)
-
   }
 
+  // Search
+  // Change status to match getAll() request
+  // Set searchedBooks state object only if search results are different than current results
   onChangeSearch = (query) => {
     BooksAPI.search(query).then((matchedBooks) => {
       if (Array.isArray(matchedBooks)) {
@@ -52,6 +53,29 @@ class BooksApp extends React.Component {
   
   // <Route exact path='/' component={Home}/>
   render() {
+
+    const bookShelfLabels =
+    [
+      {title: "Currently Reading",
+       label: "currentlyReading"
+      },
+      {
+       title: "Want to Read",
+       label: "wantToRead"
+      },
+      {
+       title: "Read",
+       label: "read"
+      }
+      ]
+
+    const bookShelves = []
+
+    for (const shelf of bookShelfLabels){
+        bookShelves.push(<BookShelf books={this.state.books.filter(b => b.shelf === shelf.label)} updateStatus={this.onChangeStatus} shelfLabel={shelf.label} title={shelf.title} />)
+      }
+    
+
     return (
       <div className="app">
           <div className="list-books">
@@ -60,9 +84,7 @@ class BooksApp extends React.Component {
             </div>
         <Route exact path="/" render={() =>
           <div>
-          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='currentlyReading' title='Currently Reading' />  
-          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='wantToRead' title='Want to Read' />
-          <BookShelf books={this.state.books} updateStatus={this.onChangeStatus} shelfLabel='read' title='Read'/>
+          {bookShelves}
           </div>
         }/>
 

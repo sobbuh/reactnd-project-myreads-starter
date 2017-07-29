@@ -15,8 +15,8 @@ const BookShelf = (props) => {
 	        
 	        <div className="bookshelf-books">
 	          <ol className="books-grid">
-	          {books.filter(book => book.shelf === shelfLabel).map(book => (
-	           <Book book={book} updateStatus={updateStatus}/>
+	          {books.map(book => (
+	           <Book book={book} updateStatus={updateStatus} />
 	            ))
 	          }
 	          </ol>
