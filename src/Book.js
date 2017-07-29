@@ -13,7 +13,7 @@ const Book = (props) => {
 	        <div className="book-cover" style={{ width: 128, height: 193, 
 	          backgroundImage: `url(${book.imageLinks ? book.imageLinks.thumbnail : 'https://books.google.com/googlebooks/images/no_cover_thumb.gif'})` }}></div>                         
 	        <div className="book-shelf-changer">
-	          <select value={book.shelf} onChange={ (event) => { updateStatus({book: book, shelf: event.target.value})} }>
+	          <select value={book.shelf} onChange={ (event) => { updateStatus(book, event.target.value)} }>
 	            <option value="" disabled>Move to...</option>
 	            <option value="currentlyReading">Currently Reading</option>
 	            <option value="wantToRead">Want to Read</option>

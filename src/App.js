@@ -14,43 +14,19 @@ class BooksApp extends React.Component {
   }
 
   // On changing the status of a book, update a new array and then pass it to the state object
-  onChangeStatus = (book) => {
-      const newBooks = this.state.books
-      let updatedBook = newBooks.filter((b) => b.id === book.book.id)
+  onChangeStatus = (book, value) => {
+    book.shelf = value
+    
+    this.setState(state => ({
+        books: state.books.filter(b => b.id !== book.id).concat([ book ])
+      }))
 
-      // if the book is not already part of our books array, add it to the array and update the shelf
-      // update the searchedBooks array as well, to keep shelf changes consistent
-      if (updatedBook.length === 0){
-        BooksAPI.get(book.book.id).then((response) => {
-      
-          return response}).then((bookToUpdate) => {
-            newBooks.push(bookToUpdate)
-            bookToUpdate.shelf = book.shelf
-            this.setState((prevState) => {
-              searchedBooks: prevState.searchedBooks.filter(b => b.id === bookToUpdate.id).map(b => b.shelf = book.shelf)
-            })
-            BooksAPI.update(bookToUpdate,bookToUpdate.shelf)
-        })
-      }
-      // if the book is part of our books array, update the shelf and the searchedBooks array
-      else{
-      updatedBook[0].shelf = book.shelf
-      BooksAPI.update(updatedBook, updatedBook[0].shelf) 
-      this.setState((prevState) => {
-        searchedBooks : prevState.searchedBooks.filter(b => b.id === updatedBook.id).map(b => b.shelf = book.shelf)
-      })
-      
-      }
+    BooksAPI.update(book, value)
 
-      this.setState({
-        books: newBooks
-      })
   }
 
-
   onChangeSearch = (query) => {
-    BooksAPI.search(query).then((query) => {
-      return query}).then((matchedBooks) => {
+    BooksAPI.search(query).then((matchedBooks) => {
       if (Array.isArray(matchedBooks)) {
         matchedBooks.map((b) => {
           b.shelf = 'none'})
@@ -59,7 +35,9 @@ class BooksApp extends React.Component {
               if (book.id === b.id){
                 b.shelf = book.shelf
             }})}
+       if (this.state.searchedBooks != matchedBooks) {
         this.setState({searchedBooks : matchedBooks})
+      }
       }
       else {
         this.setState({searchedBooks : []})
@@ -72,7 +50,7 @@ class BooksApp extends React.Component {
       this.setState({books})
     )}
   
-
+  // <Route exact path='/' component={Home}/>
   render() {
     return (
       <div className="app">
