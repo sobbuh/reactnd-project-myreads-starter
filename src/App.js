@@ -8,17 +8,25 @@ import { Route } from 'react-router-dom'
 class BooksApp extends React.Component {
 
   // Keep track of books and searched books as two separate states
+  // Create bookHashTable to quickly update shelf values during search
+
   state = {
     books : [],
     searchedBooks : [],
+    bookHashTable : {}
   }
 
 
   // On changing the status of a book, update the book and add it to the books array
   onChangeStatus = (book, value) => {
-    book.shelf = value  
+    book.shelf = value 
+    const updateBookHashTable = this.state.bookHashTable
+    updateBookHashTable[book.id] = book.shelf
+    console.log(updateBookHashTable)
+
     this.setState(state => ({
-        books: state.books.filter(b => b.id !== book.id).concat([ book ])
+        books: state.books.filter(b => b.id !== book.id).concat([ book ]),
+        bookHashTable : updateBookHashTable
       }))
     BooksAPI.update(book, value)
   }
@@ -27,8 +35,22 @@ class BooksApp extends React.Component {
   // Change status to match getAll() request
   // Set searchedBooks state object only if search results are different than current results
   onChangeSearch = (query) => {
+
     BooksAPI.search(query).then((matchedBooks) => {
-      if (Array.isArray(matchedBooks)) {
+      
+      if (Array.isArray(matchedBooks) && this.state.searchedBooks != matchedBooks) {
+        
+        console.log(this.state.searchedBooks)
+        console.log(matchedBooks)
+
+        matchedBooks.map((b) => {
+          b.shelf = this.state.bookHashTable[b.id] ? this.state.bookHashTable[b.id] : 'none'
+          
+        }
+        ) 
+  
+        /*
+        old method for fixing book shelf values
         matchedBooks.map((b) => {
           b.shelf = 'none'})
         for (const book of this.state.books){
@@ -36,9 +58,11 @@ class BooksApp extends React.Component {
               if (book.id === b.id){
                 b.shelf = book.shelf
             }})}
-       if (this.state.searchedBooks != matchedBooks) {
-        this.setState({searchedBooks : matchedBooks})
-      }
+        */
+
+        if (this.state.searchedBooks !== matchedBooks) {
+          this.setState({searchedBooks : matchedBooks})
+        }
       }
       else {
         this.setState({searchedBooks : []})
@@ -47,9 +71,18 @@ class BooksApp extends React.Component {
   
 
   componentDidMount(){
-    BooksAPI.getAll().then((books)=>
-      this.setState({books})
-    )}
+    BooksAPI.getAll().then((books)=> {      
+
+      const newBookHashTable = {}
+      books.map(b => newBookHashTable[b.id] = b.shelf)
+
+      this.setState(state => ({
+      books: books,
+      bookHashTable : newBookHashTable
+     }))
+    }) 
+  }   
+      
   
   // <Route exact path='/' component={Home}/>
   render() {

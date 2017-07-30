@@ -1,4 +1,9 @@
-const shelfLabels =
+import React from 'react'
+import BookShelf from './BookShelf'
+
+const ShelfLabels = (props) => {
+
+	const shelves =
    
     [
       {title: "Currently Reading",
@@ -13,3 +18,14 @@ const shelfLabels =
        label: "read"
       }
      ]
+
+	const bookShelves = []
+
+ for (const shelf of shelves){
+ 	bookShelves.push(<BookShelf books={this.state.books.filter(b => b.shelf === shelf.label)} updateStatus={this.onChangeStatus} shelfLabel={shelf.label} title={shelf.title} />)
+ }
+     
+     return bookShelves
+
+
+     }

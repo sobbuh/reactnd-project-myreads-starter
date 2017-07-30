@@ -11,6 +11,7 @@ class BookSearch extends Component{
 
   updateQuery = (query) => {
   this.setState({query})
+  
   }
 
   render() {
@@ -20,6 +21,7 @@ class BookSearch extends Component{
     if (query){
       updateSearch(query)
     }
+
     else{
       
     }
