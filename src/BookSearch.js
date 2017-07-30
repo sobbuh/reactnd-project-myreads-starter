@@ -11,20 +11,12 @@ class BookSearch extends Component{
 
   updateQuery = (query) => {
   this.setState({query})
-  
+
   }
 
   render() {
-    const { searchedBooks, updateStatus, updateSearch } = this.props
+    const { searchResults, updateStatus, updateSearch } = this.props
     const { query } = this.state
-
-    if (query){
-      updateSearch(query)
-    }
-
-    else{
-      
-    }
 
     return(
     <div className="search-books">
@@ -35,7 +27,8 @@ class BookSearch extends Component{
             <input
                 type="text"
                 value={query}
-                onChange={(event) => this.updateQuery(event.target.value)}
+                onChange={(event) => {this.updateQuery(event.target.value)
+                                      updateSearch(event.target.value)}}
                 placeholder="Search by title or author"
             />
           
@@ -43,7 +36,7 @@ class BookSearch extends Component{
       </div>
       <div className="search-books-results">
         <ol className="books-grid">
-          {searchedBooks.map((book) => (  
+          {searchResults.map((book) => (  
           <Book book={book} updateStatus={updateStatus} />
           ))}
 
@@ -54,7 +47,7 @@ class BookSearch extends Component{
 }
 
 BookSearch.propTypes = {
-  searchedBooks: PropTypes.array.isRequired,
+  searchResults: PropTypes.array.isRequired,
   updateSearch: PropTypes.func.isRequired,
   updateStatus: PropTypes.func.isRequired,
 }

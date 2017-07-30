@@ -12,22 +12,26 @@ class BooksApp extends React.Component {
 
   state = {
     books : [],
-    searchedBooks : [],
+    searchResults : [],
     bookHashTable : {}
   }
 
 
   // On changing the status of a book, update the book and add it to the books array
   onChangeStatus = (book, value) => {
+    // set book shelf value to the target value
     book.shelf = value 
+
+    // copy the bookHashTable and modify the copy
     const updateBookHashTable = this.state.bookHashTable
     updateBookHashTable[book.id] = book.shelf
-    console.log(updateBookHashTable)
-
+    
+    // set state for books and bookHashTable to track the shelf change
     this.setState(state => ({
         books: state.books.filter(b => b.id !== book.id).concat([ book ]),
         bookHashTable : updateBookHashTable
       }))
+    // update the backend using the BooksAPI update method
     BooksAPI.update(book, value)
   }
 
@@ -36,14 +40,14 @@ class BooksApp extends React.Component {
   // Set searchedBooks state object only if search results are different than current results
   onChangeSearch = (query) => {
 
-    BooksAPI.search(query).then((matchedBooks) => {
-      
-      if (Array.isArray(matchedBooks) && this.state.searchedBooks != matchedBooks) {
-        
-        console.log(this.state.searchedBooks)
-        console.log(matchedBooks)
 
-        matchedBooks.map((b) => {
+    BooksAPI.search(query).then((searchResults) => {
+      
+      if (Array.isArray(searchResults)) {
+        
+        console.log("searched")
+
+        searchResults.map((b) => {
           b.shelf = this.state.bookHashTable[b.id] ? this.state.bookHashTable[b.id] : 'none'
           
         }
@@ -59,13 +63,19 @@ class BooksApp extends React.Component {
                 b.shelf = book.shelf
             }})}
         */
+        
+        console.log(this.state.searchResults == searchResults)
 
-        if (this.state.searchedBooks !== matchedBooks) {
-          this.setState({searchedBooks : matchedBooks})
+        if (this.state.searchResults != searchResults) {
+          
+          this.setState({searchResults : searchResults})
+          console.log("updated search")
+          console.log(this.state.searchResults == searchResults)
+
         }
       }
       else {
-        this.setState({searchedBooks : []})
+        this.setState({searchResults : []})
       }}).catch(e => console.log(e))
   }
   
@@ -123,7 +133,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={()=>     
-          <BookSearch searchedBooks={this.state.searchedBooks} updateStatus={this.onChangeStatus} updateSearch={this.onChangeSearch}/>
+          <BookSearch searchResults={this.state.searchResults} updateStatus={this.onChangeStatus} updateSearch={this.onChangeSearch}/>
         }/> 
         </div>
      </div>
