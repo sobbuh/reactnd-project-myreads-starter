@@ -77,13 +77,13 @@ class BooksApp extends React.Component {
             }})}
         */
         
-        console.log(this.state.searchResults == searchResults)
+        console.log("are search state and new search results equal?", this.state.searchResults == searchResults)
 
         if (this.state.searchResults != searchResults) {
           
           this.setState({searchResults : searchResults})
           console.log("updated search")
-          console.log(this.state.searchResults == searchResults)
+          console.log("are search state equal and search results equal?", this.state.searchResults == searchResults)
 
         }
       }
