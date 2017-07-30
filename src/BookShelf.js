@@ -5,7 +5,7 @@ import Book from './Book.js'
 
 const BookShelf = (props) => {
       
-  const { title, books, shelfLabel, updateStatus } = props
+  const { title, books, updateStatus } = props
   
   return (
 	  <div> 
