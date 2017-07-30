@@ -16,6 +16,19 @@ class BooksApp extends React.Component {
     bookHashTable : {}
   }
 
+  bookShelfLabels =     [
+      {title: "Currently Reading",
+       label: "currentlyReading"
+      },
+      {
+       title: "Want to Read",
+       label: "wantToRead"
+      },
+      {
+       title: "Read",
+       label: "read"
+      }
+      ]
 
   // On changing the status of a book, update the book and add it to the books array
   onChangeStatus = (book, value) => {
@@ -97,28 +110,13 @@ class BooksApp extends React.Component {
   // <Route exact path='/' component={Home}/>
   render() {
 
-    const bookShelfLabels =
-    [
-      {title: "Currently Reading",
-       label: "currentlyReading"
-      },
-      {
-       title: "Want to Read",
-       label: "wantToRead"
-      },
-      {
-       title: "Read",
-       label: "read"
-      }
-      ]
 
     const bookShelves = []
 
-    for (const shelf of bookShelfLabels){
+    for (const shelf of this.bookShelfLabels){
         bookShelves.push(<BookShelf books={this.state.books.filter(b => b.shelf === shelf.label)} updateStatus={this.onChangeStatus} shelfLabel={shelf.label} title={shelf.title} />)
       }
     
-
     return (
       <div className="app">
           <div className="list-books">
